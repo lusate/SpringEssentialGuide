@@ -1,5 +1,10 @@
 package com.example.springessentialguide.data.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class ChangeProductNameDto {
 
     private Long number;
@@ -14,19 +19,4 @@ public class ChangeProductNameDto {
 
     }
 
-    public Long getNumber(){
-        return number;
-    }
-
-    public void setNumber(Long number){
-        this.number = number;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name){
-        this.name = name;
-    }
 }
