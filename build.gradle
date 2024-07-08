@@ -29,9 +29,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
     //Swagger
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+//    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
     implementation 'org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE'
     implementation 'com.google.code.gson:gson:2.10.1'
