@@ -119,7 +119,34 @@ TRACE - DEBUG 레벨보다 더 상세한 메시지를 표현하기 위한 레벨
 <br>
 
 ## 🛡️ Spring Security
+- 인증 : 사용자가 누구인지 확인하는 단계. (로그인)
+  - 로그인에 성공하면 애플리케이션 서버는 응답으로 사용자에게 토큰을 전달. 로그인 실패하면 토큰 전달 받지 못함.
+- 인가 : 인증을 통해 검증된 사용자가 애플리케이션 내부의 리소스에 접근할 때 사용자가 해당 리소스에 접근할 권리가 있는지를 확인하는 과정.
+  - 로그인을 했는데 게시판 접근 등급으로 인해 접근이 허가되거나 거부되는 것.
 
+**사용자가 애플리케이션에 접근하여 수행하려는 모든 작업과 접근하려는 데이터가 리소스에 해당**
+
+**스프링 시큐리티**
+- 애플리케이션의 인증, 인가 등의 보안 기능을 제공하는 스프링 하위 프로젝트 중 하나.
+- 서블릿 필터를 기반으로 동작하며, DispatcherServlet이 배치 되어 있다.
+- 사용하고자 하는 필터체인을 서블릿 컨테이너의 필터 사이에서 동작시키기 위해 DelegatingFilterProxy를 사용.
+- 서블릿 컨테이너의 생명주기와 스프링 애플리케이션 컨텍스트 사이에서 다리 역할을 수행.
+- DelegatingFilterProxy는 필터체인 프록시를 내부에 가지고 있다.
+- 필터체인 프록시는 스프링 부트의 자동 설정에 의해 자동 생성된다.
+
+<br>
+
+![img.png](img.png)
+
+1. 클라이언트로부터 요청을 받으면 서블릿 필터에서 SecurityFilterChain으로 작업이 위임되고 그중 UsernamePasswordAuthenticationFilter에서 인증을 처리.<br>
+2. AuthenticationFilter는 요청 객체에서 username과 password를 추출해서 토큰을 생성. (로그인 시작)! <br>
+3. 이후 AuthenticationManager에게 토큰을 전달. AuthenticationManager는 인터페이스이며, 일반적으로 사용되는 구현체는 ProvideManager.<br>
+4. ProviderManager는 인증을 위해 AuthenticationProvider로 토큰을 전달. <br>
+5. AuthenticationProvider는 토큰의 정보를 UserDetailService에 전달. <br>
+6. **UserDetailService는 전달받은 정보를 통해 데이터베이스에서 일치하는 사용자를 찾아 UserDetails 객체를 생성.** <br>
+7. **생성된 UserDetails 객체는 AuthenticationProvider로 전달되며, 해당 Provider에서 인증을 수행하고 성공하게 되면 ProviderManager로 권한을 담은 토큰을 전달.** <br>
+8. **ProviderManager는 검증된 토큰을 AuthenticationFilter로 전달.** <br>
+9. AuthenticationFilter는 검증된 토큰을 SecurityContextHolder에 있는 SecuityContext에 저장됨.
 
 <br>
 
@@ -128,10 +155,57 @@ TRACE - DEBUG 레벨보다 더 상세한 메시지를 표현하기 위한 레벨
 <br>
 
 ## 🛡️ JWT
+- JSON Web Token으로 당사자 간에 정보를 JSON 형태로 안전하게 전송하기 위한 토큰.
+- JWT는 URL로 이용할 수 있는 문자열로만 구성돼 있으며, 디지털 서명이 적용돼 있어 신뢰할 수 있다.
+- 주로 서버와의 통신에서 권한 인가를 위해 사용된다.
+- URL에서 사용할 수 있는 문자열로만 구성돼 있기 때문에 HTTP 구성요소 어디든 위치 가능.
 
+<br>
+
+**JWT는 점(.) 으로 구분된 세 부분으로 구성된다.**
+**헤더.내용.서명**<br>
+
+**헤더 : 검증과 관련된 내용을 담음. -> 두가지 정보로 alg와 typ를 가지고 있음.**
+alg 속성에는 해싱 알고리즘을 지정. 해싱 알고리즘은 보통 SHA256 또는 RSA를 사용하며, 토큰을 검증할 때 사용되는 서명 부분에서 사용.<br>
+typ 속성에는 토큰의 타입을 지정.
+<br>
+
+**이렇게 완성된 헤더는 Base64Url 형식으로 인코딩돼 사용됨.**
+
+<br>
+
+**내용 : 토큰에 담는 정보를 포함. -> 이고셍 포함된 속성들은 클레임이라 하며, 크게 3가지로 분류.**
+등록된 클레임, 공개 클레임, 비공개 클레임<br>
+
+JWT 내용 예시
+```json
+{
+  "sub": "wikibooks payload",
+  "exp": "1602076408",
+  "userId": "wikibooks",
+  "username": "flature"
+}
+```
+
+**서명 : 인코딩된 헤더, 인코딩된 내용, 비밀키, 헤더의 알고리즘 속성값을 가져와 생성됨.**
+
+<br>
+
+## 🛡️ JWT 디버거 사용.
+웹 브라우저인 https://jwt.io/#debugger-io 로 가면 쉽게 JWT를 생성해 볼 수 있음.
 
 <br>
 
 ---
 
 <br>
+
+## 🛡️스프링 시큐리티와 JWT 적용.
+**UserDetails**
+- getAuthorities() : 계정이 가지고 있는 권한 목록을 리턴.
+- getPassword() : 계정의 비밀번호를 리턴.
+- getUsername() : 계정의 이름을 리턴. -> 일반적으로 아이디를 리턴.
+- isAccountNonExpired() : 계정이 만료됐는지 리턴. (true는 만료되지 않았다는 의미.)
+- isAccountNonLocked() : 계정이 잠겨있는지 리턴. (true는 잠기지 않았다는 의미)
+- isCredentialNonExpired() : 비밀번호가 만료됐는지 리턴. (true는 만료되지 않았다는 의미)
+- isEnabled() : 계정이 활성화 되어 있는지를 리턴. (true가 활성화 상태)
