@@ -1,4 +1,8 @@
 spring:
+#  config:
+#    activate:
+#      on-profile: local
+
   application:
     name: SpringEssentialGuide
   datasource:
@@ -7,8 +11,15 @@ spring:
     password: 12341234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    properties:
-        show-sql: true
     hibernate:
-      ddl-auto: create
-    database-platform: org.hibernate.dialect.MySQLDialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    defer-datasource-initialization: true
+
+
+jwt:
+  secret: 33fc3db5a20ea872df586174411d1409cb9ce8e2d9387d2c8412e03bc0eea01c

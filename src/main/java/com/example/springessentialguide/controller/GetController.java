@@ -1,6 +1,6 @@
 package com.example.springessentialguide.controller;
 
-import com.example.springessentialguide.Dto.MemberDto;
+import com.example.springessentialguide.data.dto.MemberDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;

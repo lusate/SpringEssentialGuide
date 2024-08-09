@@ -9,16 +9,15 @@
 
 1. gradle 이므로 의존성 추가합니다
 ```java
-implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+implementation 'org.springframework.boot:spring-boot-starter-web'
+implementation 'io.springfox:springfox-boot-starter:3.0.0'
+implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 ```
 
 2. Swagger 설정 코드 추가
 `SwaggerConfiguration` 클래스 생성합니다.
 
 3. 애플리케이션 실행한 후 `http://localhost:8080/swagger-ui.html`로 접속하면 Swagger 페이지가 출력됩니다.
-
-4. 실행 화면
 
 
 <br>
@@ -209,3 +208,158 @@ JWT 내용 예시
 - isAccountNonLocked() : 계정이 잠겨있는지 리턴. (true는 잠기지 않았다는 의미)
 - isCredentialNonExpired() : 비밀번호가 만료됐는지 리턴. (true는 만료되지 않았다는 의미)
 - isEnabled() : 계정이 활성화 되어 있는지를 리턴. (true가 활성화 상태)
+
+<br>
+
+---
+
+<br>
+
+## 🛡Spring Security, JWT 실습
+`openssl rand -hex 32` 랜덤으로 암호 키를 생성한 후, 생성된 secret key를 application.yml에 설정.
+해당 키는 토큰의 암호화 복호화에 사용됨. HS256 알고리즘을 사용하기 위해 32글자 이상으로 설정.
+
+<br>
+
+<br>
+
+### 🌀generateToken()
+인증 객체를 기반으로 Access Token과 Refresh Token 생성.<br>
+Access Token : 인증된 사용자의 권한 정보와 만료 시간을 담음.<br>
+Refresh Token : Access Token의 갱신을 위해 사용됨.<br>
+
+<br>
+
+### 🌀getAuthentication()
+주어진 Access Token을 복호화하여 사용자의 인증 정보를 생성.<br>
+토큰의 Claims에서 권한 정보를 추출하고, User 객체를 생성하여 Authentication 객체로 반환<br>
+"auth" 클레임은 토큰에 저장된 권한 정보를 나타냄.<br>
+가져온 권한 정보를 SimpleGrantedAuthority 객체로 변환하여 컬렉션에 추가<br>
+UserDetails 객체를 생성하여 주체와 권한 정보, 기타 필요한 정보를 설정.<br>
+UsernamepasswordAuthenticationToken 객체를 생성하여 주체와 권한 정보를 포함한 인증 객체를 생성.<br>
+
+<br>
+
+### 🌀validateToken()
+주어진 토큰을 검증하여 유효성 확인
+Jwts.parseBuilder를 사용하여 토큰의 서명 키를 설정하고 예외 처리를 통해 토큰의 유효성 여부를 판단.<br>
+IllegalArgumentException이 발생하는 경우<br>
+- 토큰이 올바른 형식이 아니거나 클레임이 비어있는 경우 등에 발생.<br>
+claim.getSubject()는 주어진 토큰의 클레임에서 "sub" 클레임의 값을 반환
+- 토큰의 주체를 나타냄. ex) 사용자의 식별자나 이메일 주소
+
+<br>
+
+### 🌀parseClaims()
+클레임(Claims): 토큰에서 사용할 정보의 조각.<br> 
+주어진 Access Token을 복호화하고, 만료된 토큰인 경우에도 Claims 반환.<br>
+parseClaimsJws() 메서드가 JWT 토큰의 검증과 파싱을 모두 수행.<br>
+
+<br>
+
+### 🌀doFilter()
+resolveToken 메서드를 사용하여 요청 헤더에서 JWT 토큰을 추출<br>
+JwtTokenProvider의 validateToken() 메서드로 JWT 토큰의 유효성 검증<br>
+토큰이 유효하면 JwtTokenProvider의 getAuthentication() 메서드로 인증 객체 가져와서 SecurityContext에 저장.<br>
+- 요청을 처리하는 동안 인증 정보가 유지됨.<br>
+
+chain.doFilter()를 호출하여 다음 필터로 요청을 전달.<br>
+
+<br>
+
+### 🌀실행
+"members/sign-in" -> 모든 사용자에게 허용<br>
+"members/test" -> USER 권한을 가진 사용자에게 허용<br>
+
+Postman으로 DB에 저장한 회원 정보를 body에 담아서 "members/sign-in"으로 요청.<br>
+그러면 성공적으로 Access Token 발급<br>
+**발급받은 Access Token을 header에 넣어 "members/test"로 요청**
+
+<br>
+
+### 🌀 
+
+<br>
+<br>
+
+### 로그인 구현 시 문제 발생
+**문제1** <br>
+entity로 User를 두고 했는데 `UserDetails principal = new User(claims.getSubject(), "", authorities);` 코드가 있어서 혼란이 옴.<br>
+new User는 엔티티가 아니라 Security에서 import를 받아서 사용하는 라이브러리일 뿐.
+
+<br>
+<br>
+
+**문제2** <br>
+`Cannot resolve configuration property 'jwt.secret.key'` 
+문제될 게 따로 없는데도 secret.key가 제대로 인식되지 않는 문제가 발생.<br>
+알고보니 내가 `application.yml` 이 아닌 `application-db.yml`로 해놔서 문제였던 것.<br>
+jwt 하는 부분은 이름 다르게 yml을 짜서 하고 싶었던 마음에 바꿔버렸다.<br>
+
+```
+spring:
+  config:
+    activate:
+      on-profile: dev
+```
+<br>
+이렇게 해주면 완성된다.
+
+<br>
+<br>
+
+**문제3** <br>
+JWT 헤더를 읽지 못하는 문제
+```java
+private String resolveToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader(AUTH_HEADER);
+
+    // null인 이유 : 헤더 누락 -> 클라이언트에서 요청을 보낼 때 Authorization 헤더를 포함하지 않음.
+    log.info("headerAuth = {}", bearerToken);
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        return bearerToken.substring(7);
+    }
+    return null;
+}
+```
+
+SecurityConfig 파일에서 코드를 잘못 다룸. -> 요청 자체에 문제가 생김.<br>
+헤더를 못 읽는 건 말이 안됨. <br>
+알고 보니 SecurityConfig 파일에서 SecurityFilterChain filterChain(HttpSecurity http) 를 잘못 작성 <br>
+
+<br>
+
+**문제4** <br>
+작성 수정 후 다시 로그인 시도했는데 localhost:8080에서 "자격 증명 실패했습니다 " <br>
+Member entity를 보니 구현받은 UserDetails에서 get으로 아이디와 비번을 받지 않아서 "Empty Bcrypt"가 발생 <br>
+또한 데이터베이스에 있는 멤버의 비밀번호가 BcryptEnding 되지 않은 상태여서 실패. <br>
+회원가입 시 비밀번호가 인코딩 된 상태로 DB에 들어가야 하는데 디코딩된 비번이 들어가 있어서 자격 증명이 실패한 것 <br>
+<br>
+
+인코딩된 비밀번호를 넣어서 다시 시도했더니 제대로 accessToken과 refreshToken이 생성됨.<br>
+```json
+{
+  "grantType": "Bearer",
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIkMmEkMTAkZERDWmg5azhsT0ovNUNCdjk5RXBldUdsdkwxUUw5Qk1RRXBJUzVHUUo2R1JUa3BZQUN5L0siLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzIzMTc2MDk3fQ.bInvyajWQRBSM0qq9-dIcbanaX222wTd_pWYksSf75g",
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjMxNzYwOTd9.78x0DDAtp91NyS1wuApbToVcohZiYqbRYpVYUVJAUaM"
+}
+```
+<br>
+test2 API를 호출하면 토큰이 만료되지 않는 이상 응답값으로 username이 출력됨.
+
+<br>
+
+---
+
+<br>
+
+## 🛡로그인 이후 회원가입
+
+
+
+
+<br>
+
+---
+
+<br>

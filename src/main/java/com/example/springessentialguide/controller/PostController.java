@@ -1,6 +1,6 @@
 package com.example.springessentialguide.controller;
 
-import com.example.springessentialguide.Dto.MemberDto;
+import com.example.springessentialguide.data.dto.MemberDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
