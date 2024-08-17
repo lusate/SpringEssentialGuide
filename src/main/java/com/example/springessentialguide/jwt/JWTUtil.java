@@ -9,6 +9,9 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+/**
+ * JWT를 발급하고 검증하는 클래스
+ */
 @Component
 public class JWTUtil {
     private final SecretKey secretKey; // 객체 키 생성
@@ -38,11 +41,22 @@ public class JWTUtil {
     }
 
     /**
-     * 토큰 생성 메서드
+     * 내부 카테고리 값을 꺼내기 위한 메서드
      */
-    public String createJwt(String username, String role, Long expiredMs) {
+    public String getCategory(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
+    }
+
+
+    /**
+     * 토큰 생성 메서드
+     * category는 Access인지 Refresh 토큰인지 구분하기 위한 파라미터
+     * Refresh를 가지고 접근하려고 하면 사용할 수 없도록 만들기
+     */
+    public String createJwt(String category, String username, String role, Long expiredMs) {
 
         return Jwts.builder()
+                .claim("category", category)
                 .claim("username", username) // claim으로 특정한 키에 대한 데이터를 넣어줌.
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis())) // 토큰이 언제 발생
