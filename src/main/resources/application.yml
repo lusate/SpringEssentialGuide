@@ -1,8 +1,4 @@
 spring:
-#  config:
-#    activate:
-#      on-profile: local
-
   application:
     name: SpringEssentialGuide
   datasource:
@@ -20,6 +16,5 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
 
-
-jwt:
-  secret: 33fc3db5a20ea872df586174411d1409cb9ce8e2d9387d2c8412e03bc0eea01c
+  jwt:
+    secret: 9ac1addab338d864812854ea2f73c12687e530951b6521ca89cedc5e75de4736
