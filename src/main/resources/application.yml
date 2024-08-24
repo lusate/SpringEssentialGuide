@@ -16,5 +16,38 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
 
-  jwt:
-    secret: 9ac1addab338d864812854ea2f73c12687e530951b6521ca89cedc5e75de4736
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            client-name: naver
+            client-id: QtQxxE1b5yYf8JHAeMtX
+            client-secret: i57qTeK8a4
+            redirect-uri: http://localhost:8080/login/oauth2/code/naver
+            authorization-grant-type: authorization_code
+            scope:
+              - name
+              - email
+            # scope 은 사용 API로 선택했던 것들입니다.
+          google:
+            client-name: google
+            client-id: 874929996292-29abjma92ie230e1v8h9tfu4i71me285.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            authorization-grant-type: authorization_code
+            scope:
+              - profile
+              - email
+
+        provider:
+          naver:
+            authorization-uri:
+            token-uri:
+            user-info-uri:
+            user-name-attribute: response
+
+
+
+#  jwt:
+#    secret: 9ac1addab338d864812854ea2f73c12687e530951b6521ca89cedc5e75de4736

@@ -1,12 +1,5 @@
 package com.example.springessentialguide.data.service;
 
-<<<<<<< HEAD
-import org.springframework.stereotype.Service;
-
-@Service
-public interface MemberService {
-
-=======
 import com.example.springessentialguide.data.dto.SignUpDto;
 import com.example.springessentialguide.data.entity.Member;
 import com.example.springessentialguide.data.repository.MemberRepository;
@@ -35,5 +28,4 @@ public class MemberService {
 
         memberRepository.save(member);
     }
->>>>>>> basic-JWT
 }

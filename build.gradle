@@ -49,6 +49,9 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
+    // OAuth2 적용
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     //Swagger
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
