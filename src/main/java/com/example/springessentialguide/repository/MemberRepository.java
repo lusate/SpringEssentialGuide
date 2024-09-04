@@ -1,10 +1,8 @@
-package com.example.springessentialguide.data.repository;
+package com.example.springessentialguide.repository;
 
-import com.example.springessentialguide.data.entity.Member;
+import com.example.springessentialguide.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {

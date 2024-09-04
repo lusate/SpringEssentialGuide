@@ -1,4 +1,4 @@
-package com.example.springessentialguide.data.dto;
+package com.example.springessentialguide.dto;
 
 public interface OAuth2Response {
     //제공자 (Ex. naver, google, ...)

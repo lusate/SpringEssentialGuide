@@ -1,4 +1,4 @@
-package com.example.springessentialguide.data.dto;
+package com.example.springessentialguide.dto;
 
 import java.util.Map;
 

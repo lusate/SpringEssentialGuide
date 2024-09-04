@@ -1,4 +1,4 @@
-package com.example.springessentialguide.data.dto;
+package com.example.springessentialguide.dto;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ public class NaverResponse implements OAuth2Response {
 
     @Override
     public String getProvider() {
-        return "Naver";
+        return "naver";
     }
 
     @Override

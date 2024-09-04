@@ -1,4 +1,4 @@
-package com.example.springessentialguide.data.entity;
+package com.example.springessentialguide.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,6 +12,8 @@ public class Member {
     private int id;
 
     private String username;
-    private String password;
+
+    private String name;
+    private String email;
     private String role;
 }
