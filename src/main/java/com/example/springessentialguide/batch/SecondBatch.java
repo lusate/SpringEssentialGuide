@@ -45,7 +45,7 @@ public class SecondBatch {
                 .build();
     }
 
-    // Read 작업
+    // Read 작업 - JDBC로 하는 것이 성능이 좋음
     @Bean
     public RepositoryItemReader<WinEntity> winReader() {
         return new RepositoryItemReaderBuilder<WinEntity>()
@@ -67,7 +67,7 @@ public class SecondBatch {
         };
     }
 
-    // Write
+    // Write - JDBC로 하는 것이 성능이 좋음
     @Bean
     public RepositoryItemWriter<WinEntity> winWriter() {
         return new RepositoryItemWriterBuilder<WinEntity>()

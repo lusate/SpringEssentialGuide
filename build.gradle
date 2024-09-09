@@ -30,6 +30,9 @@ dependencies {
     // spring batch 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-batch'
 
+    // 엑셀 접근 의존성 추가
+    implementation 'org.apache.poi:poi-ooxml:5.3.0'
+
     // security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 

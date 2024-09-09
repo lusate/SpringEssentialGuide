@@ -46,4 +46,33 @@ public class MainController {
 
         return "ok";
     }
+
+    // http://localhost:8080/fourth?value=zzz
+    @GetMapping("/fourth")
+    public String fourthApi(@RequestParam("value") String value) throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("date", value)
+                .toJobParameters();
+
+        // callable 과 같은 도구로 비동기 처리가 가능하다고 합니다.
+        jobLauncher.run(jobRegistry.getJob("fourthJob"), jobParameters);
+
+
+        return "ok";
+    }
+
+    @GetMapping("/fifth")
+    public String fifthApi(@RequestParam("value") String value) throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("date", value)
+                .toJobParameters();
+
+        // callable 과 같은 도구로 비동기 처리가 가능하다고 합니다.
+        jobLauncher.run(jobRegistry.getJob("fifthJob"), jobParameters);
+
+
+        return "ok";
+    }
 }
