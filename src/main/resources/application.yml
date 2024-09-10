@@ -48,6 +48,3 @@ spring:
             user-name-attribute: response
 
 
-
-  jwt:
-    secret: 9ac1addab338d864812854ea2f73c12687e530951b6521ca89cedc5e75de4736
