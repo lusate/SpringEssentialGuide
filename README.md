@@ -350,7 +350,9 @@ test2 API를 호출하면 토큰이 만료되지 않는 이상 응답값으로 u
 <br>
 
 ## 🛡로그인과정 해보고 토큰을 받았으나 영상을 통해서 더 자세히 알고 싶어 따로 브랜치를 파서 한번 더 시도.
-브랜치 이름은 basic-JWT
+### 브랜치 이름
+기초 - basic-JWT
+Refresh 토큰이 포함된 심화 과정 진행 완료 - JWT-Deeper
 
 
 <br>
@@ -358,3 +360,11 @@ test2 API를 호출하면 토큰이 만료되지 않는 이상 응답값으로 u
 ---
 
 <br>
+
+## 🛡OAuth2 JWT 완료 + SpringBatch 완료
+이후 세션 과정도 push하고 개인 프로젝트에 소셜 + 일반 로그인 적용해보기
+Next.js와 React 하면서 프론트도 같이 해보면서 적용하기
+
+### 브랜치 이름
+OAuth2를 활용한 JWT 로그인 완료 - OAuth2-JWT
+스프링 배치 완료 - SpringBatch-basic
