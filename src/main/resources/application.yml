@@ -5,21 +5,21 @@ spring:
   # jdbc를 사용한다면 url을 jdbc-url로 작성
   datasource-meta:
     jdbc-url: jdbc:mysql://localhost:3306/firstDB?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: root
-    password: 12341234
+    username: ${Datasource_Meta_Username}
+    password: ${Datasource_Meta_Password}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
   datasource-data:
     jdbc-url: jdbc:mysql://localhost:3306/secondDB?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: root
-    password: 12341234
+    username: ${Datasource_Meta_Username}
+    password: ${Datasource_Meta_Password}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
