@@ -1,15 +1,24 @@
 package com.example.springessentialguide.jwt;
 
+<<<<<<< HEAD
 import com.example.springessentialguide.data.entity.Refresh;
 import com.example.springessentialguide.data.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
+=======
+import com.example.springessentialguide.data.dto.CustomUserDetails;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+>>>>>>> 1d1de56 (rebase)
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+<<<<<<< HEAD
 import org.springframework.http.HttpStatus;
+=======
+>>>>>>> 1d1de56 (rebase)
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +28,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
+<<<<<<< HEAD
 import java.util.Date;
+=======
+>>>>>>> 1d1de56 (rebase)
 import java.util.Iterator;
 
 @Slf4j
@@ -27,11 +39,18 @@ import java.util.Iterator;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+<<<<<<< HEAD
     private final RefreshRepository refreshRepository;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
         // 클라이언트 요청에서 username, password 추출
+=======
+
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
+        // 클라이언트 요청ㅇ서 username, password 추출
+>>>>>>> 1d1de56 (rebase)
         String username = obtainUsername(req);
         String password = obtainPassword(req);
 
@@ -45,11 +64,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     /**
      * 검증 성공하면 진행할 메서드
+<<<<<<< HEAD
      * 2개의 토큰 발급받기
+=======
+>>>>>>> 1d1de56 (rebase)
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
                                             Authentication authentication) throws IOException, ServletException {
+<<<<<<< HEAD
 
         // 유저 정보
         String username = authentication.getName();
@@ -70,12 +93,32 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         res.addCookie(createCookie("refresh", refresh)); // 응답 쿠키에 refresh 토큰 넣어주기
         res.setStatus(HttpStatus.OK.value()); // 200 응답
 
+=======
+        // member 객체를 알아내기 위해 CustomUserDetails
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        String username = customUserDetails.getUsername();
+
+        // role 값 뽑아내는 방법
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+
+        String role = auth.getAuthority();
+
+
+        String token = jwtUtil.createJwt(username, role, 60*60*10L);
+        log.info("token을 생성했어 : {}", token);
+
+        res.addHeader("Authorization", "Bearer " + token);
+>>>>>>> 1d1de56 (rebase)
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         response.setStatus(401);
     }
+<<<<<<< HEAD
 
     /**
      * Refresh 토큰을 저장소에 저장하는 로직
@@ -106,4 +149,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         return cookie;
     }
+=======
+>>>>>>> 1d1de56 (rebase)
 }

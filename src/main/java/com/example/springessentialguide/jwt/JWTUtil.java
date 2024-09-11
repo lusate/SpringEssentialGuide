@@ -9,9 +9,12 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+<<<<<<< HEAD
 /**
  * JWT를 발급하고 검증하는 클래스
  */
+=======
+>>>>>>> 1d1de56 (rebase)
 @Component
 public class JWTUtil {
     private final SecretKey secretKey; // 객체 키 생성
@@ -41,6 +44,7 @@ public class JWTUtil {
     }
 
     /**
+<<<<<<< HEAD
      * 내부 카테고리 값을 꺼내기 위한 메서드
      */
     public String getCategory(String token) {
@@ -57,6 +61,13 @@ public class JWTUtil {
 
         return Jwts.builder()
                 .claim("category", category)
+=======
+     * 토큰 생성 메서드
+     */
+    public String createJwt(String username, String role, Long expiredMs) {
+
+        return Jwts.builder()
+>>>>>>> 1d1de56 (rebase)
                 .claim("username", username) // claim으로 특정한 키에 대한 데이터를 넣어줌.
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis())) // 토큰이 언제 발생
