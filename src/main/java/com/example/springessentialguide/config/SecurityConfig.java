@@ -1,52 +1,34 @@
 package com.example.springessentialguide.config;
 
-import com.example.springessentialguide.jwt.JWTFilter;
-import com.example.springessentialguide.jwt.JWTUtil;
-import com.example.springessentialguide.jwt.LoginFilter;
+import com.example.springessentialguide.data.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final AuthenticationConfiguration authenticationConfiguration;
-    private final JWTUtil jwtUtil;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
-                .csrf((auth) -> auth.disable())
-                .formLogin((auth) -> auth.disable())
-                .httpBasic((auth) -> auth.disable())
-                .authorizeRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/signup").permitAll() // 모든 권한 허용
-                        .requestMatchers("/admin").hasRole("ADMIN") // ADMIN 권한을 가진 사람만 허용
-                        .anyRequest().authenticated()) // 그 외의 다른 요청들은 로그인한 사용자만 접근할 수 있다.
-                // Session을 S1TATLESS 하게 만들어야 하기 때문에
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .csrf((csrf) -> csrf.disable())
+                .formLogin((login) -> login.disable())
+                .httpBasic((basic) -> basic.disable())
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig) ->
+                                userInfoEndpointConfig.userService(customOAuth2UserService)))
+
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/", "/oauth2/**", "/login/**").permitAll()
+                        .anyRequest().authenticated());
 
         return http.build();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
     }
 }
