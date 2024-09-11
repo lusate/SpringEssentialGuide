@@ -15,6 +15,3 @@ spring:
         show_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
-
-  jwt:
-    secret: 9ac1addab338d864812854ea2f73c12687e530951b6521ca89cedc5e75de4736
